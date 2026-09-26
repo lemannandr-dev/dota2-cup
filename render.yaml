@@ -8,7 +8,6 @@ services:
     region: singapore
     branch: main
     buildCommand: npm ci --include=dev && npx prisma generate && NODE_OPTIONS=--max-old-space-size=2048 npm run build
-    preDeployCommand: npx prisma migrate deploy
     startCommand: node scripts/render-start.mjs
     healthCheckPath: /api/health
     envVars:

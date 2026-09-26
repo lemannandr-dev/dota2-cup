@@ -16,6 +16,18 @@ function start(command, args) {
 	return spawn(command, args, { stdio: 'inherit', env: childEnv });
 }
 
+function run(command, args) {
+	return new Promise((resolve, reject) => {
+		const child = start(command, args);
+		child.on('exit', (code) => {
+			if (code === 0) resolve();
+			else reject(new Error(`${command} ${args.join(' ')} exited ${code}`));
+		});
+	});
+}
+
+await run('npx', ['prisma', 'migrate', 'deploy']);
+
 if (process.env.DISABLE_TOURNAMENT_TICK !== '1') {
 	const tick = start('npx', ['tsx', 'scripts/tournament-worker.ts']);
 	tick.on('exit', (code, signal) => {
