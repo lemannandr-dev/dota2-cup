@@ -26,7 +26,7 @@ services:
       - key: LOG_LEVEL
         value: info
       - key: STEAM_API_KEY
-        value: ""
+        sync: false
       - key: LOCAL_MEDIA_DIR
         value: /tmp/aegis-media
       - key: DATABASE_URL

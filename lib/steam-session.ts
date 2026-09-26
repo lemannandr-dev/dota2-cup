@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { prisma } from '@/lib/prisma';
 import { hashToken } from '@/lib/steam';
+import { syncSteamProfileIfNeeded } from '@/lib/steam-profile-sync';
 
 export const SESSION_COOKIE = 'aegis_session';
 
@@ -35,5 +36,6 @@ export async function getCurrentSteamUser() {
 	const token = (await cookies()).get(SESSION_COOKIE)?.value;
 	if (!token) return null;
 	const session = await getSteamSessionByToken(token);
-	return session?.user ?? null;
+	if (!session?.user) return null;
+	return syncSteamProfileIfNeeded(session.user);
 }
