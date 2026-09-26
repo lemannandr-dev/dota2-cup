@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { preload } from 'react-dom';
+import { ArenaCoverSlides } from '@/components/layout/ArenaCoverSlides';
+import { DOTA_COVER_SLIDES } from '@/lib/dota-cover-slides';
 import { DEFAULT_SITE_APPEARANCE, type SiteAppearance } from '@/lib/site-appearance';
 
 const DEFAULT_COVER_SRCSET = '/brand/dota2-heroes-828.webp 828w, /brand/dota2-heroes-1280.webp 1280w, /brand/dota2-heroes.webp 1600w';
@@ -39,12 +41,16 @@ export function ArenaCover({
 			: appearance.dotaLogoUrl;
 
 	if (preloadArt) {
-		preload(cover.src, {
-			as: 'image',
-			imageSrcSet: cover.srcSet,
-			imageSizes: cover.sizes,
-			fetchPriority: 'high'
-		});
+		if (stage) {
+			preload(DOTA_COVER_SLIDES[0].src, { as: 'image', fetchPriority: 'high' });
+		} else {
+			preload(cover.src, {
+				as: 'image',
+				imageSrcSet: cover.srcSet,
+				imageSizes: cover.sizes,
+				fetchPriority: 'high'
+			});
+		}
 	}
 
 	return (
@@ -53,19 +59,25 @@ export function ArenaCover({
 			aria-label="Aegis Arena, турниры Dota 2"
 			style={{ '--cover-position-y': `${appearance.backdropPositionY}%` } as CSSProperties}
 		>
-			{/* Native img keeps LCP in the first HTML paint (no client Image boundary). */}
-			{/* eslint-disable-next-line @next/next/no-img-element */}
-			<img
-				className="arena-cover-art"
-				src={cover.src}
-				srcSet={cover.srcSet}
-				sizes={cover.sizes}
-				alt="Герои Dota 2"
-				fetchPriority="high"
-				decoding="async"
-				width={828}
-				height={268}
-			/>
+			{stage ? (
+				<ArenaCoverSlides />
+			) : (
+				<>
+					{/* Native img keeps LCP in the first HTML paint (no client Image boundary). */}
+					{/* eslint-disable-next-line @next/next/no-img-element */}
+					<img
+						className="arena-cover-art"
+						src={cover.src}
+						srcSet={cover.srcSet}
+						sizes={cover.sizes}
+						alt="Герои Dota 2"
+						fetchPriority="high"
+						decoding="async"
+						width={828}
+						height={268}
+					/>
+				</>
+			)}
 			<div className="arena-cover-content">
 				<div className="arena-cover-game">
 					{/* eslint-disable-next-line @next/next/no-img-element */}

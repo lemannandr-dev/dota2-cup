@@ -21,6 +21,19 @@
     "downloaded": "2026-09-07",
     "processing": "Encoded as WebP"
   },
+  "home-slides": {
+    "owner": "Valve",
+    "page": "https://www.dota2.com/",
+    "resolution": "3840x2160",
+    "hotlinked": true,
+    "files": [
+      "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/international2022/persona/cm_wallpaper.jpg",
+      "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/international2022/persona/cm_wallpaper_02.jpg",
+      "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/international2022/arcana/fv_wallpaper.jpg",
+      "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/international2022/arcana/fv_wallpaper_02.jpg",
+      "https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/international2022/arcana/razor_wallpaper.jpg"
+    ]
+  },
   "dota2-scene-900.webp": {
     "source": "dota2-scene.webp",
     "processing": "Resized to 900px WebP q68 for mobile backdrop"

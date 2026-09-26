@@ -120,8 +120,87 @@ body {
 .arena-cover.is-landing { min-height: min(32rem, 65svh); }
 .arena-cover.is-landing .arena-cover-content { max-width: 90rem; margin-inline: auto; }
 /* Keep mobile LCP free of transform animation; desktop-only camera drift. */
+.arena-cover-slide {
+	position: absolute !important;
+	inset: 0;
+	width: 100% !important;
+	height: 100% !important;
+	max-width: none;
+	object-fit: cover;
+	object-position: center center;
+	z-index: 0;
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 1.1s ease;
+}
+
+.arena-cover-slide.is-active { opacity: 1; }
+
+.arena-slide-bar {
+	position: absolute;
+	z-index: 3;
+	top: 0.75rem;
+	left: 1rem;
+	right: 1rem;
+	display: flex;
+	align-items: center;
+	gap: 0.6rem;
+	min-height: 2.75rem;
+	padding: 0.35rem 0.45rem 0.35rem 0.35rem;
+	border: 1px solid rgba(241, 233, 214, 0.16);
+	border-radius: 0.75rem;
+	background: rgba(6, 8, 12, 0.62);
+	backdrop-filter: blur(10px);
+	pointer-events: auto;
+}
+
+.arena-slide-nav {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 2rem;
+	height: 2rem;
+	flex-shrink: 0;
+	border-radius: 0.5rem;
+	color: #f1e9d6;
+	font-size: 1.35rem;
+	line-height: 1;
+}
+
+.arena-slide-nav:hover { background: rgba(241, 233, 214, 0.08); }
+
+.arena-slide-copy { min-width: 0; flex: 1; }
+.arena-slide-kicker {
+	font-size: 0.625rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: #d7c7a2;
+}
+.arena-slide-title {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: #f5f7f6;
+}
+.arena-slide-line { display: none; }
+
+.arena-slide-dots { display: flex; align-items: center; gap: 0.35rem; flex-shrink: 0; }
+.arena-slide-dots button {
+	width: 0.45rem;
+	height: 0.45rem;
+	border-radius: 999px;
+	background: rgba(241, 233, 214, 0.35);
+}
+.arena-slide-dots button.is-active { width: 1.1rem; background: #f1e9d6; }
+
 @media (min-width: 768px) {
-	.arena-cover.is-moving .arena-cover-art { animation: arena-camera 18s ease-in-out infinite alternate; }
+	.arena-cover.is-moving .arena-cover-art,
+	.arena-cover.is-moving .arena-cover-slide.is-active { animation: arena-camera 18s ease-in-out infinite alternate; }
+	.arena-slide-line::before { content: ' · '; }
+	.arena-slide-line { display: inline; font-weight: 450; color: rgba(241, 233, 214, 0.78); }
 }
 
 @keyframes arena-camera {
@@ -130,23 +209,28 @@ body {
 }
 
 .arena-cover.is-stage {
+	width: 100vw;
+	max-width: 100vw;
+	margin-left: calc(50% - 50vw);
 	min-height: calc(100dvh - 3.5rem);
+}
+.arena-cover.is-stage .arena-cover-content {
+	width: min(1440px, 100%);
+	margin-inline: auto;
 }
 .arena-cover.is-stage .arena-cover-game { display: none; }
 .arena-cover.is-stage .arena-cover-content {
 	justify-content: flex-start;
 	align-items: stretch;
 	min-height: inherit;
-	padding: 1rem 1rem 1.25rem;
+	padding: 4.35rem 1rem 1.25rem;
 }
 .arena-cover.is-stage [data-pull-to-refresh] > .mb-2 {
 	position: relative;
 	z-index: 6;
 }
 .arena-cover.is-stage::after {
-	background:
-		linear-gradient(90deg, rgba(6, 8, 12, 0.82) 0%, rgba(6, 8, 12, 0.42) 34%, rgba(6, 8, 12, 0.08) 62%, rgba(6, 8, 12, 0.55) 100%),
-		linear-gradient(180deg, rgba(6, 8, 12, 0.2), rgba(6, 8, 12, 0.62));
+	background: linear-gradient(180deg, rgba(6, 8, 12, 0.28) 0%, rgba(6, 8, 12, 0.05) 16%, rgba(6, 8, 12, 0.42) 100%);
 }
 
 .home-play-seal {
@@ -255,6 +339,7 @@ body {
 	.mobile-app-content { padding-bottom: 0; }
 	.arena-cover { min-height: 22rem; }
 	.arena-cover-content { padding: 2rem 1.5rem; }
+	.arena-cover.is-stage .arena-cover-content { padding-top: 4.35rem; }
 	.arena-cover-title { font-size: 2.5rem; }
 	.arena-cover-subtitle { font-size: 1rem; }
 	.arena-cover.is-compact { min-height: 13rem; }
@@ -275,7 +360,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.arena-cover.is-moving .arena-cover-art, .party-dialog[open] { animation: none; }
+	.arena-cover.is-moving .arena-cover-art,
+	.arena-cover.is-moving .arena-cover-slide,
+	.party-dialog[open] { animation: none; }
+	.arena-cover-slide { transition: none; }
 	.aegis-action, .party-command, .party-icon, .mobile-tab-icon { transition: none; }
 }
 
