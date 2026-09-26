@@ -16,7 +16,7 @@
   <img src="docs/readme/tournaments.png" width="420" alt="Список кубков">
 </p>
 
-© 2026 Aegis Arena. All rights reserved. See [LICENSE](LICENSE).
+© 2026 Aegis Arena.
 
 ## Русский
 
