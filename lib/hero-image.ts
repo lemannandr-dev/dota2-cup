@@ -1,5 +1,6 @@
 const CDN = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/dota_react/heroes';
 const CDN_CLASSIC = 'https://cdn.cloudflare.steamstatic.com/apps/dota2/images/heroes';
+const VERT_FROM_REACT = new Set(['dawnbreaker', 'marci', 'primal_beast', 'muerta']);
 
 export function heroSlug(apiName: string) {
 	return apiName
@@ -19,7 +20,10 @@ export function heroImage(apiName: string, variant: 'vert' | 'landscape' = 'vert
 export function heroImageCdn(apiName: string, variant: 'vert' | 'landscape' = 'vert') {
 	const slug = heroSlug(apiName);
 	if (!slug) return null;
-	if (variant === 'vert') return `${CDN_CLASSIC}/${slug}_vert.jpg`;
+	if (variant === 'vert') {
+		if (VERT_FROM_REACT.has(slug)) return `${CDN}/${slug}.png`;
+		return `${CDN_CLASSIC}/${slug}_vert.jpg`;
+	}
 	return `${CDN}/${slug}.png`;
 }
 

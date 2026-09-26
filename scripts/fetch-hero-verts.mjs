@@ -28,7 +28,7 @@ const SEED = [
 	'snapfire', 'sniper', 'spectre', 'spirit_breaker', 'storm_spirit', 'sven', 'techies', 'templar_assassin',
 	'terrorblade', 'tidehunter', 'shredder', 'tinker', 'tiny', 'treant', 'troll_warlord', 'tusk', 'abyssal_underlord',
 	'undying', 'ursa', 'vengefulspirit', 'venomancer', 'viper', 'visage', 'void_spirit', 'warlock', 'weaver',
-	'windrunner', 'winter_wyvern', 'witch_doctor', 'skeleton_king', 'zuus'
+	'windrunner', 'winter_wyvern', 'witch_doctor', 'wisp', 'skeleton_king', 'kez', 'largo', 'zuus'
 ];
 
 async function main() {
