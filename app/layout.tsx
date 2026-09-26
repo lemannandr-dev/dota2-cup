@@ -88,6 +88,8 @@ export const viewport: Viewport = {
 	themeColor: '#06080C'
 };
 
+export const dynamic = 'force-dynamic';
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
 	const lang = process.env.NEXT_PUBLIC_DEFAULT_LOCALE || 'ru';
 	const [user, appearance] = await Promise.all([getCurrentSteamUser(), getSiteAppearance()]);
