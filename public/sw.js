@@ -1,4 +1,4 @@
-const CACHE_NAME = 'aegis-arena-shell-v3';
+const CACHE_NAME = 'aegis-arena-shell-v4';
 const OFFLINE_URL = '/offline.html';
 const SHELL_ASSETS = [
 	OFFLINE_URL,
@@ -9,7 +9,7 @@ const SHELL_ASSETS = [
 ];
 
 self.addEventListener('install', (event) => {
-	event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS)));
+	event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(SHELL_ASSETS)).catch(() => undefined));
 	self.skipWaiting();
 });
 
@@ -29,13 +29,10 @@ self.addEventListener('fetch', (event) => {
 		event.respondWith(caches.match(url.pathname).then((cached) => cached || fetch(event.request)));
 		return;
 	}
-	if (event.request.mode !== 'navigate') return;
+	if (event.request.mode !== 'navigate' || self.navigator.onLine) return;
 
 	event.respondWith(
-		fetch(event.request).catch(async () => {
-			const fallback = await caches.match(OFFLINE_URL);
-			return fallback || Response.error();
-		})
+		caches.match(OFFLINE_URL).then((fallback) => fallback || fetch(event.request))
 	);
 });
 
