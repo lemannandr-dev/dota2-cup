@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="aegis_ink">#06080C</color>
+    <color name="aegis_panel">#0D1219</color>
+    <color name="aegis_gold">#D8A84E</color>
+    <color name="aegis_cream">#F1E9D6</color>
+    <color name="aegis_muted">#8994A3</color>
+</resources>

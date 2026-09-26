@@ -1,0 +1,28 @@
+{
+  "dota2-heroes.webp": {
+    "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/570/library_hero.jpg",
+    "page": "https://store.steampowered.com/app/570/Dota_2/",
+    "owner": "Valve",
+    "downloaded": "2026-09-07",
+    "processing": "Resized to 1600px and encoded as WebP"
+  },
+  "dota2-heroes-828.webp": {
+    "source": "dota2-heroes.jpg",
+    "processing": "Resized to 828px WebP q72 for mobile LCP"
+  },
+  "dota2-heroes-1280.webp": {
+    "source": "dota2-heroes.jpg",
+    "processing": "Resized to 1280px WebP q74"
+  },
+  "dota2-scene.webp": {
+    "source": "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/570/page_bg_raw.jpg?t=1769535998",
+    "page": "https://store.steampowered.com/app/570/Dota_2/",
+    "owner": "Valve",
+    "downloaded": "2026-09-07",
+    "processing": "Encoded as WebP"
+  },
+  "dota2-scene-900.webp": {
+    "source": "dota2-scene.webp",
+    "processing": "Resized to 900px WebP q68 for mobile backdrop"
+  }
+}

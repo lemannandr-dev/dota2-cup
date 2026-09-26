@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Aegis Arena</string>
+    <string name="brand_name">AEGIS ARENA</string>
+    <string name="dota_community">DOTA 2 COMMUNITY</string>
+    <string name="loading_arena">Подключаемся к арене</string>
+    <string name="file_chooser">Выберите изображение</string>
+    <string name="steam_error_title">Steam не открылся</string>
+    <string name="steam_error_body">Проверьте интернет и повторите вход. Ваше приглашение сохранено.</string>
+    <string name="steam_retry">Повторить вход</string>
+    <string name="go_home">На главную</string>
+</resources>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/app_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/aegis_ink" />
+
+    <FrameLayout
+        android:id="@+id/loading_shell"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/aegis_ink"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <ImageView
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:contentDescription="@null"
+                android:src="@drawable/aegis_icon" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0"
+                android:text="@string/brand_name"
+                android:textColor="@color/aegis_cream"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/dota_mark" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/dota_community"
+                    android:textColor="@color/aegis_muted"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/loading_arena"
+                android:textColor="@color/aegis_muted"
+                android:textSize="14sp" />
+
+            <ProgressBar
+                style="?android:attr/progressBarStyle"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginTop="20dp"
+                android:indeterminateTint="@color/aegis_gold" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <ScrollView
+        android:id="@+id/auth_error_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/aegis_ink"
+        android:fillViewport="true"
+        android:focusable="true"
+        android:visibility="gone">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="24dp">
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:contentDescription="@null"
+                android:src="@drawable/aegis_icon" />
+            <TextView
+                android:id="@+id/auth_error_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:accessibilityHeading="true"
+                android:gravity="center"
+                android:text="@string/steam_error_title"
+                android:textColor="@color/aegis_cream"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:gravity="center"
+                android:text="@string/steam_error_body"
+                android:textColor="@color/aegis_muted"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/auth_retry"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:backgroundTint="@color/aegis_gold"
+                android:letterSpacing="0"
+                android:minHeight="56dp"
+                android:text="@string/steam_retry"
+                android:textAllCaps="false"
+                android:textColor="@color/aegis_ink"
+                android:textSize="16sp" />
+            <Button
+                android:id="@+id/auth_home"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="@color/aegis_panel"
+                android:letterSpacing="0"
+                android:minHeight="56dp"
+                android:text="@string/go_home"
+                android:textAllCaps="false"
+                android:textColor="@color/aegis_cream"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </ScrollView>
+
+    <ProgressBar
+        android:id="@+id/page_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:layout_gravity="top"
+        android:indeterminate="false"
+        android:max="100"
+        android:progressTint="@color/aegis_gold"
+        android:visibility="gone" />
+</FrameLayout>

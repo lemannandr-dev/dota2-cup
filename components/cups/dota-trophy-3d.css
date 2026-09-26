@@ -1,0 +1,759 @@
+.trophy3d-slot {
+	position: relative;
+	display: inline-block;
+	overflow: visible;
+	container-type: size;
+}
+
+.trophy3d-stage {
+	--accent: #ff6a1a;
+	--accent-hot: #ffd36a;
+	--accent-deep: #761207;
+	--rim: #f6e7b4;
+	--rotate-x: -2.5deg;
+	--rotate-y: 0deg;
+	--light-x: 50%;
+	--light-y: 42%;
+	position: relative;
+	width: 24em;
+	height: 40em;
+	max-width: none;
+	font-size: min(calc(100cqw / 24), calc(100cqh / 40));
+	perspective: 76em;
+	perspective-origin: 50% 44%;
+	isolation: isolate;
+	-webkit-user-select: none;
+	user-select: none;
+	touch-action: pan-y;
+}
+
+.trophy3d-radiant {
+	--accent: #5ce68b;
+	--accent-hot: #d7ff8c;
+	--accent-deep: #064d35;
+}
+
+.trophy3d-night {
+	--accent: #7ec8ff;
+	--accent-hot: #e8f6ff;
+	--accent-deep: #0a2a4a;
+	--rim: #d7e8f6;
+}
+
+.trophy3d-void {
+	--accent: #b388ff;
+	--accent-hot: #f4e8ff;
+	--accent-deep: #2a0a4a;
+	--rim: #e4d4ff;
+}
+
+.trophy3d-relic {
+	--accent: #c47a48;
+	--accent-hot: #f4d4a8;
+	--accent-deep: #4a2410;
+	--rim: #f0d8b0;
+}
+
+.trophy3d-night .trophy3d-ember-disc {
+	background:
+		radial-gradient(circle at 30% 18%, rgba(232, 246, 255, 0.95), transparent 12%),
+		radial-gradient(circle at 68% 66%, #9ad4ff 0 4%, transparent 17%),
+		radial-gradient(circle at 63% 26%, #3d7dff 0 7%, transparent 24%),
+		conic-gradient(from 210deg, #061018, #123a62, #7ec8ff, #0c2238, #d7e8f6, #1a4a78, #061018);
+}
+
+.trophy3d-void .trophy3d-ember-disc {
+	background:
+		radial-gradient(circle at 30% 18%, rgba(244, 232, 255, 0.95), transparent 12%),
+		radial-gradient(circle at 68% 66%, #d4b0ff 0 4%, transparent 17%),
+		radial-gradient(circle at 63% 26%, #7a2cff 0 7%, transparent 24%),
+		conic-gradient(from 210deg, #120618, #3a1262, #b388ff, #220c38, #f4e8ff, #4a1a78, #120618);
+}
+
+.trophy3d-relic .trophy3d-ember-disc {
+	background:
+		radial-gradient(circle at 30% 18%, rgba(255, 236, 196, 0.95), transparent 12%),
+		radial-gradient(circle at 68% 66%, #e8b86a 0 4%, transparent 17%),
+		radial-gradient(circle at 63% 26%, #a84a18 0 7%, transparent 24%),
+		conic-gradient(from 210deg, #1a0c06, #6a2a10, #c47a48, #3a1808, #f4d4a8, #8a4018, #1a0c06);
+}
+
+.trophy3d-light-top,
+.trophy3d-light-up,
+.trophy3d-aura,
+.trophy3d-floor {
+	pointer-events: none;
+}
+
+.trophy3d-light-top {
+	position: absolute;
+	left: 12%;
+	right: 12%;
+	top: -10%;
+	height: 46%;
+	z-index: 0;
+	border-radius: 50%;
+	background:
+		radial-gradient(ellipse at 50% 0%, rgba(255, 236, 176, 0.7) 0 12%, transparent 58%),
+		radial-gradient(circle at 50% 8%, rgba(255, 210, 96, 0.28), transparent 42%);
+	filter: blur(0.85em);
+}
+
+.trophy3d-light-up {
+	position: absolute;
+	left: 8%;
+	right: 8%;
+	bottom: -4%;
+	height: 42%;
+	z-index: 0;
+	border-radius: 50%;
+	background:
+		radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--accent) 62%, transparent) 0 16%, transparent 60%),
+		radial-gradient(ellipse at 50% 88%, rgba(255, 176, 64, 0.42), transparent 52%);
+	filter: blur(0.95em);
+	animation: trophy3d-uplight 3.6s ease-in-out infinite;
+}
+
+.trophy3d-aura {
+	position: absolute;
+	inset: 5% -12% 8%;
+	z-index: -2;
+	border-radius: 50%;
+	background:
+		radial-gradient(circle at var(--light-x) var(--light-y), color-mix(in srgb, var(--accent) 34%, transparent) 0 8%, transparent 43%),
+		radial-gradient(ellipse at 50% 76%, color-mix(in srgb, var(--accent-deep) 72%, transparent), transparent 66%);
+	filter: blur(1.4em);
+	opacity: 0.86;
+}
+
+.trophy3d-floor {
+	position: absolute;
+	left: 8%;
+	right: 8%;
+	bottom: 0.2%;
+	height: 9%;
+	z-index: -1;
+	border-radius: 50%;
+	background:
+		radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--accent) 38%, transparent) 0 18%, transparent 62%),
+		radial-gradient(ellipse, rgba(0, 0, 0, 0.88), transparent 70%);
+	filter: blur(0.55em);
+	transform: rotateX(68deg);
+}
+
+.trophy3d-model,
+.trophy3d-crown,
+.trophy3d-frame,
+.trophy3d-body,
+.trophy3d-base,
+.trophy3d-crest,
+.trophy3d-triangle {
+	transform-style: preserve-3d;
+}
+
+.trophy3d-model {
+	position: absolute;
+	inset: 0;
+	filter: drop-shadow(0 2.2em 1.8em rgba(0, 0, 0, 0.58));
+	transform: rotateX(var(--rotate-x)) rotateY(var(--rotate-y));
+	transform-origin: 50% 58%;
+	transition: transform 420ms cubic-bezier(0.2, 0.8, 0.2, 1);
+	will-change: transform;
+}
+
+.trophy3d-interactive:hover .trophy3d-model {
+	transition-duration: 90ms;
+}
+
+.trophy3d-crown {
+	position: absolute;
+	top: 0.7em;
+	left: 50%;
+	width: 14.4em;
+	height: 14.4em;
+	transform: translateX(-50%) translateZ(1.3em);
+	z-index: 8;
+}
+
+.trophy3d-ring {
+	position: absolute;
+	inset: 0;
+	border-radius: 50%;
+}
+
+.trophy3d-ring-back {
+	background:
+		radial-gradient(circle, transparent 0 48%, #050608 49% 64%, #15191e 65% 72%, transparent 73%),
+		linear-gradient(145deg, #20262c, #040506 56%, #171b20);
+	transform: translateZ(-1.7em) translate(0.55em, 0.62em);
+	filter: brightness(0.48);
+}
+
+.trophy3d-ring-depth {
+	inset: 0.18em;
+	background:
+		radial-gradient(circle, transparent 0 47%, #4c3a21 48% 54%, #0b0c0d 55% 70%, transparent 71%),
+		repeating-linear-gradient(90deg, #322410 0 0.16em, #0a0b0c 0.18em 0.36em);
+	transform: translateZ(-0.72em) translate(0.24em, 0.28em);
+	box-shadow: 0.4em 0.5em 1em rgba(0, 0, 0, 0.72);
+}
+
+.trophy3d-ring-front {
+	display: grid;
+	place-items: center;
+	background:
+		radial-gradient(circle, transparent 0 46%, #f3efe6 47% 50%, #9aa0a6 51% 54%, #3a4046 55% 61%, #111418 62% 70%, transparent 71%),
+		linear-gradient(130deg, #d8dde2, #6d747c 42%, #1b2026);
+	transform: translateZ(0.95em);
+	box-shadow:
+		0 0 0 0.05em #f4f1ea,
+		inset 0.12em 0.14em 0.18em rgba(255, 255, 255, 0.7),
+		inset -0.28em -0.32em 0.55em rgba(0, 0, 0, 0.7),
+		0 0.8em 1.6em rgba(0, 0, 0, 0.5),
+		0 0 2.4em color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.trophy3d-ember-disc {
+	position: absolute;
+	inset: 2.25em;
+	border-radius: 50%;
+	overflow: hidden;
+	background:
+		radial-gradient(circle at 30% 18%, rgba(255, 246, 196, 0.95), transparent 10%),
+		radial-gradient(circle at 68% 66%, #ffce55 0 4%, transparent 17%),
+		radial-gradient(circle at 63% 26%, #e8370d 0 7%, transparent 24%),
+		conic-gradient(from 210deg, #170706, #8d1409, #ff7520, #44100c, #ffb438, #72140b, #160606);
+	border: 0.09em solid var(--rim);
+	box-shadow:
+		inset 0 0.18em 0.35em rgba(255, 244, 200, 0.55),
+		inset 0 0 1.4em rgba(255, 214, 96, 0.42),
+		inset 0 0 0 0.26em rgba(20, 5, 2, 0.48),
+		0 0 1.6em color-mix(in srgb, var(--accent) 42%, transparent);
+}
+
+.trophy3d-ember-disc::before,
+.trophy3d-ember-disc::after {
+	content: "";
+	position: absolute;
+	inset: -28%;
+	border-radius: 46%;
+	background:
+		radial-gradient(ellipse at 50% 20%, transparent 0 48%, rgba(255, 219, 117, 0.5) 50% 51%, transparent 53%),
+		repeating-conic-gradient(from 12deg, transparent 0 13deg, rgba(255, 230, 126, 0.22) 14deg 15deg, transparent 16deg 37deg);
+	mix-blend-mode: screen;
+	animation: trophy3d-fire-spin 18s linear infinite;
+}
+
+.trophy3d-ember-disc::after {
+	inset: -10%;
+	opacity: 0.5;
+	animation-direction: reverse;
+	animation-duration: 11s;
+}
+
+.trophy3d-emblem {
+	position: absolute;
+	width: 6.4em;
+	height: 6.4em;
+	transform: translateZ(1.15em);
+	filter: drop-shadow(0 0.2em 0.25em rgba(0, 0, 0, 0.65));
+}
+
+.trophy3d-dota-photo {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	filter: brightness(1.25) contrast(1.15) drop-shadow(0 0 0.25em rgba(255, 220, 140, 0.45));
+}
+
+.trophy3d-dota-fallback {
+	display: none;
+	width: 100%;
+	height: 100%;
+}
+
+.trophy3d-dota-fallback.is-on {
+	display: block;
+}
+
+.trophy3d-dota-lobe {
+	fill: #e8e6e1;
+}
+
+.trophy3d-dota-river {
+	fill: #2a120c;
+	opacity: 0.55;
+}
+
+.trophy3d-stud {
+	position: absolute;
+	width: 0.72em;
+	height: 0.72em;
+	border-radius: 50%;
+	background: radial-gradient(circle at 32% 28%, #f4f1ea 0 18%, #8b9198 28% 48%, #1c2024 62% 100%);
+	border: 0.06em solid #d8dde2;
+	box-shadow: 0 0 0 0.03em #0c0d0f, 0 0.1em 0.16em rgba(0, 0, 0, 0.75);
+	transform: translateZ(1.5em);
+}
+
+.trophy3d-stud-1 { left: 6.5em; top: 0.55em; }
+.trophy3d-stud-2 { right: 6.5em; top: 0.55em; }
+.trophy3d-stud-3 { right: 0.5em; top: 6.5em; }
+.trophy3d-stud-4 { right: 0.5em; bottom: 6.5em; }
+.trophy3d-stud-5 { right: 6.5em; bottom: 0.55em; }
+.trophy3d-stud-6 { left: 6.5em; bottom: 0.55em; }
+.trophy3d-stud-7 { left: 0.5em; bottom: 6.5em; }
+.trophy3d-stud-8 { left: 0.5em; top: 6.5em; }
+
+.trophy3d-frame {
+	position: absolute;
+	top: 8.8em;
+	left: 50%;
+	width: 21em;
+	height: 24em;
+	transform: translateX(-50%) translateZ(-0.15em);
+	z-index: 2;
+}
+
+.trophy3d-arm {
+	position: absolute;
+	top: -1.4em;
+	width: 9.2em;
+	height: 25.2em;
+	background:
+		linear-gradient(105deg, rgba(255,255,255,.12), transparent 18% 62%, rgba(0,0,0,.88)),
+		repeating-linear-gradient(92deg, #14110d 0 0.18em, #0b0a08 0.18em 0.34em, #1a1612 0.34em 0.5em);
+	border: 0.05em solid rgba(90, 84, 76, 0.7);
+	box-shadow:
+		inset 0.25em 0.2em 0.4em rgba(255,255,255,.05),
+		inset -0.45em -0.25em 0.7em rgba(0,0,0,.82),
+		0.5em 0.7em 1em rgba(0,0,0,.42);
+}
+
+.trophy3d-arm-left {
+	left: 0;
+	clip-path: polygon(48% 0, 100% 14%, 72% 38%, 86% 58%, 36% 100%, 4% 90%, 40% 54%, 22% 28%);
+	transform: rotateY(-7deg) translateZ(-0.55em);
+}
+
+.trophy3d-arm-right {
+	right: 0;
+	clip-path: polygon(52% 0, 0 14%, 28% 38%, 14% 58%, 64% 100%, 96% 90%, 60% 54%, 78% 28%);
+	transform: rotateY(7deg) translateZ(-0.55em);
+}
+
+.trophy3d-silver {
+	position: absolute;
+	top: 1.6em;
+	width: 0.62em;
+	height: 16.4em;
+	border-radius: 0.06em;
+	background: linear-gradient(90deg, #5d646c, #f2f0ea 36%, #a8aeb4 58%, #2a2f34 100%);
+	box-shadow: 0 0 0 0.035em #eceae4, 0 0.4em 0.6em rgba(0,0,0,.55);
+	z-index: 4;
+}
+
+.trophy3d-silver-left {
+	left: 7.55em;
+	transform: rotate(26deg) translateZ(0.6em);
+	transform-origin: 50% 100%;
+}
+
+.trophy3d-silver-right {
+	right: 7.55em;
+	transform: rotate(-26deg) translateZ(0.6em);
+	transform-origin: 50% 100%;
+}
+
+.trophy3d-core-glow {
+	position: absolute;
+	left: 50%;
+	bottom: 3.4em;
+	width: 5em;
+	height: 8.8em;
+	transform: translateX(-50%) translateZ(-0.3em);
+	clip-path: polygon(50% 0, 100% 26%, 66% 100%, 34% 100%, 0 26%);
+	background:
+		radial-gradient(circle at 50% 66%, var(--accent-hot), transparent 10%),
+		linear-gradient(180deg, #1d0703, var(--accent-deep) 56%, #050506);
+	box-shadow: 0 0 2em color-mix(in srgb, var(--accent) 42%, transparent);
+	opacity: 0.9;
+}
+
+.trophy3d-body {
+	position: absolute;
+	top: 11.4em;
+	left: 50%;
+	width: 13em;
+	height: 20em;
+	transform: translateX(-50%) translateZ(1em);
+	z-index: 5;
+}
+
+.trophy3d-body-layer {
+	position: absolute;
+	inset: 0;
+	clip-path: polygon(16% 0, 84% 0, 94% 20%, 70% 46%, 78% 70%, 60% 100%, 40% 100%, 22% 70%, 30% 46%, 6% 20%);
+}
+
+.trophy3d-body-back {
+	background: #020304;
+	transform: translateZ(-1.55em) translate(0.55em, 0.62em);
+	filter: brightness(0.45);
+}
+
+.trophy3d-body-edge {
+	inset: 0.1em;
+	background: linear-gradient(135deg, #c9a96a, #1b2025 24%, #050607 66%, #e6c56a);
+	transform: translateZ(-0.35em) translate(0.18em, 0.2em);
+}
+
+.trophy3d-body-front {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background:
+		repeating-linear-gradient(92deg, rgba(255,255,255,.03) 0 0.12em, transparent 0.12em 0.28em),
+		linear-gradient(180deg, rgba(255, 200, 110, 0.1), transparent 22%),
+		radial-gradient(circle at var(--light-x) var(--light-y), rgba(255,255,255,.14), transparent 26%),
+		linear-gradient(160deg, #1a1612 0%, #0a0908 40%, #12100d 70%, #050504 100%);
+	box-shadow:
+		inset 0.18em 0.12em 0.24em rgba(255,255,255,.06),
+		inset -0.45em -0.45em 0.9em rgba(0,0,0,.8),
+		0 0.8em 1.3em rgba(0,0,0,.55);
+	transform: translateZ(0.58em);
+}
+
+.trophy3d-place-number {
+	margin-top: 2.4em;
+	color: #ffe08a;
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	font-size: 4.1em;
+	font-weight: 800;
+	line-height: 0.78;
+	letter-spacing: -0.04em;
+	text-shadow:
+		0 0 0.18em #ffb02a,
+		0 0 0.55em #ff6a1a,
+		0 0.08em 0.08em #000;
+}
+
+.trophy3d-place-label {
+	margin-top: 0.15em;
+	color: #ffd36a;
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	font-size: 1.05em;
+	font-weight: 800;
+	letter-spacing: 0.22em;
+	text-shadow: 0 0 0.35em #ff7a1a, 0 0.12em 0.14em #000;
+}
+
+.trophy3d-triangle {
+	position: relative;
+	width: 5.6em;
+	height: 4.8em;
+	margin-top: 1.15em;
+	transform: translateZ(0.4em);
+}
+
+.trophy3d-triangle-metal,
+.trophy3d-triangle-core {
+	position: absolute;
+	inset: 0;
+	clip-path: polygon(50% 0, 100% 100%, 0 100%);
+}
+
+.trophy3d-triangle-metal {
+	background: linear-gradient(180deg, #f4f1ea, #8b9198 40%, #2a2f34);
+	box-shadow: 0 0 0 0.04em #eceae4;
+}
+
+.trophy3d-triangle-core {
+	inset: 0.42em 0.7em 0.28em;
+	display: grid;
+	place-items: center;
+	background:
+		radial-gradient(circle at 50% 70%, #ff5a18, transparent 46%),
+		linear-gradient(180deg, #4a0f0c, #140404);
+	clip-path: polygon(50% 8%, 88% 100%, 12% 100%);
+}
+
+.trophy3d-triangle-core svg {
+	width: 62%;
+	height: 62%;
+	margin-top: 0.45em;
+	filter: drop-shadow(0 0 0.2em #ff7a1a);
+}
+
+.trophy3d-crest {
+	position: absolute;
+	top: 28.6em;
+	left: 50%;
+	width: 5.8em;
+	height: 5.8em;
+	transform: translateX(-50%) translateZ(2.4em);
+	z-index: 9;
+	filter: drop-shadow(0 0 0.45em rgba(255, 120, 20, 0.55));
+}
+
+.trophy3d-crest-wing-l,
+.trophy3d-crest-wing-r {
+	fill: #c9a227;
+	stroke: #f6e7b4;
+	stroke-width: 1.4;
+}
+
+.trophy3d-crest-blade {
+	fill: #f4d56a;
+}
+
+.trophy3d-crest-star {
+	fill: #ff6a1a;
+}
+
+.trophy3d-crest-star-cut {
+	fill: #ffe08a;
+}
+
+.trophy3d-base {
+	position: absolute;
+	left: 50%;
+	bottom: 0.35em;
+	width: 20em;
+	height: 8.8em;
+	transform: translateX(-50%) translateZ(0.2em);
+	z-index: 7;
+}
+
+.trophy3d-base-back,
+.trophy3d-base-front {
+	position: absolute;
+	inset: 0;
+	clip-path: polygon(12% 0, 88% 0, 100% 24%, 92% 100%, 8% 100%, 0 24%);
+}
+
+.trophy3d-base-back {
+	background: #020203;
+	transform: translateZ(-1.8em) translate(0.7em, 0.65em);
+}
+
+.trophy3d-base-front {
+	display: grid;
+	place-items: center;
+	background:
+		repeating-linear-gradient(92deg, rgba(255,255,255,.035) 0 0.14em, transparent 0.14em 0.3em),
+		linear-gradient(180deg, rgba(255, 180, 80, 0.12), transparent 24%),
+		linear-gradient(145deg, #1c1814, #0a0908 42%, #14110e 72%, #050504);
+	border: 0.07em solid rgba(246, 231, 180, 0.4);
+	box-shadow:
+		0 0 0 0.04em var(--rim),
+		inset 0.5em 0.4em 1em rgba(255,255,255,.06),
+		inset -0.7em -0.8em 1.1em rgba(0,0,0,.78),
+		0 -0.6em 1.4em color-mix(in srgb, var(--accent) 22%, transparent),
+		0 1em 1.4em rgba(0,0,0,.6);
+	transform: translateZ(0.58em);
+}
+
+.trophy3d-base-top {
+	position: absolute;
+	left: 9%;
+	right: 9%;
+	top: -1.15em;
+	height: 2.5em;
+	clip-path: polygon(8% 0, 92% 0, 100% 100%, 0 100%);
+	background: linear-gradient(180deg, #f0dca8 0%, #333a40 28%, #07080a 68%);
+	border: 0.06em solid var(--rim);
+	transform: rotateX(64deg) translateZ(0.42em);
+	transform-origin: 50% 100%;
+}
+
+.trophy3d-base-side {
+	position: absolute;
+	top: 1.2em;
+	width: 2em;
+	height: 6.8em;
+	background: linear-gradient(90deg, #111419, #020203);
+	filter: brightness(0.68);
+}
+
+.trophy3d-base-side-left {
+	left: -0.05em;
+	clip-path: polygon(0 0, 100% 18%, 64% 100%, 20% 100%);
+	transform: rotateY(-56deg) translateZ(-0.4em);
+	transform-origin: 100% 50%;
+}
+
+.trophy3d-base-side-right {
+	right: -0.05em;
+	clip-path: polygon(0 18%, 100% 0, 80% 100%, 36% 100%);
+	transform: rotateY(56deg) translateZ(-0.4em);
+	transform-origin: 0 50%;
+}
+
+.trophy3d-plaque {
+	width: 15.6em;
+	padding: 0.72em 0.7em 0.7em;
+	text-align: center;
+	background:
+		radial-gradient(circle at 50% 120%, rgba(255, 110, 20, 0.55), transparent 46%),
+		conic-gradient(from 200deg, #2a0806, #8d1409, #ff7520, #44100c, #ffb438, #72140b, #160606);
+	border: 0.09em solid #e6c56a;
+	box-shadow:
+		0 0 0 0.04em #2a2110,
+		inset 0 0 0 0.1em #17130b,
+		0 -0.35em 1.1em rgba(255, 110, 20, 0.45),
+		0 0.8em 1em rgba(0,0,0,.6);
+	transform: translateZ(1em);
+}
+
+.trophy3d-plaque strong,
+.trophy3d-plaque span {
+	display: block;
+	color: #f4d88e;
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	line-height: 1.3;
+	text-shadow: 0 0.12em 0.14em #000;
+}
+
+.trophy3d-plaque strong {
+	font-size: 0.92em;
+	letter-spacing: 0.045em;
+}
+
+.trophy3d-plaque span {
+	margin-top: 0.28em;
+	color: rgba(244, 216, 142, 0.78);
+	font-size: 0.68em;
+	letter-spacing: 0.05em;
+}
+
+@keyframes trophy3d-fire-spin {
+	to { transform: rotate(360deg); }
+}
+
+@keyframes trophy3d-idle {
+	0%, 100% { transform: rotateX(-2.5deg) rotateY(-4deg) translateY(0); }
+	50% { transform: rotateX(-1deg) rotateY(4deg) translateY(-0.26em); }
+}
+
+@keyframes trophy3d-uplight {
+	0%, 100% { opacity: 0.78; transform: scale(0.96); }
+	50% { opacity: 1; transform: scale(1.05); }
+}
+
+.trophy3d-auto:not(:hover) .trophy3d-model {
+	animation: trophy3d-idle 7s ease-in-out infinite;
+}
+
+.trophy3d-compact .trophy3d-model {
+	will-change: auto;
+	animation: trophy3d-breathe 4.8s ease-in-out infinite;
+}
+
+.trophy3d-compact .trophy3d-ember-disc::before,
+.trophy3d-compact .trophy3d-ember-disc::after {
+	animation: none;
+}
+
+.trophy3d-compact .trophy3d-crown {
+	top: 0.25em;
+	width: 15.4em;
+	height: 15.4em;
+	transform: translateX(-50%) translateZ(1.4em);
+}
+
+.trophy3d-compact .trophy3d-emblem {
+	width: 7.1em;
+	height: 7.1em;
+}
+
+.trophy3d-compact .trophy3d-frame {
+	top: 11.2em;
+	width: 15.6em;
+	height: 17em;
+}
+
+.trophy3d-compact .trophy3d-silver {
+	top: 0.2em;
+	width: 1.3em;
+	height: 12.2em;
+	background: linear-gradient(90deg, #8d949c, #f7f4ec 38%, #c4c8cd 62%, #3a4046 100%);
+	box-shadow: 0 0 0 0.05em #f4f0e6, 0 0 0.55em rgba(255, 196, 96, 0.28);
+}
+
+.trophy3d-compact .trophy3d-silver-left {
+	left: 4.85em;
+}
+
+.trophy3d-compact .trophy3d-silver-right {
+	right: 4.85em;
+}
+
+.trophy3d-compact .trophy3d-body {
+	top: 14.6em;
+	width: 11em;
+	height: 16.2em;
+}
+
+.trophy3d-compact .trophy3d-body-layer {
+	clip-path: polygon(20% 0, 80% 0, 92% 18%, 72% 100%, 28% 100%, 8% 18%);
+}
+
+.trophy3d-compact .trophy3d-body-front {
+	background:
+		linear-gradient(180deg, rgba(255, 214, 120, 0.22), transparent 20%),
+		linear-gradient(160deg, #2a2218 0%, #100e0b 42%, #1a1612 72%, #070605 100%);
+	box-shadow:
+		inset 0 0 0 0.12em rgba(246, 231, 180, 0.28),
+		inset 0.18em 0.12em 0.24em rgba(255,255,255,.08),
+		inset -0.4em -0.4em 0.8em rgba(0,0,0,.78);
+}
+
+.trophy3d-compact .trophy3d-place-number {
+	margin-top: 0.35em;
+	font-size: 7em;
+}
+
+.trophy3d-compact .trophy3d-base {
+	width: 16.4em;
+	height: 6.2em;
+	bottom: 0.3em;
+}
+
+.trophy3d-compact .trophy3d-base-top {
+	top: -0.85em;
+	height: 2.1em;
+	background: linear-gradient(180deg, #f6e7b4 0%, #8a7340 34%, #1a1610 78%);
+}
+
+.trophy3d-compact .trophy3d-base-front {
+	background:
+		linear-gradient(180deg, rgba(255, 210, 120, 0.28), transparent 32%),
+		linear-gradient(145deg, #3a2c16, #120e0a 46%, #1c1610 78%, #070605);
+	box-shadow:
+		0 0 0 0.08em #f0dca8,
+		inset 0.35em 0.28em 0.7em rgba(255,255,255,.08),
+		inset -0.5em -0.55em 0.9em rgba(0,0,0,.78);
+}
+
+.trophy3d-compact .trophy3d-light-top,
+.trophy3d-compact .trophy3d-light-up {
+	filter: blur(0.45em);
+	opacity: 0.98;
+}
+
+@keyframes trophy3d-breathe {
+	0%, 100% { transform: rotateX(-2deg) rotateY(-2deg) translateY(0); }
+	50% { transform: rotateX(-1deg) rotateY(2deg) translateY(-0.12em); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.trophy3d-model,
+	.trophy3d-ember-disc::before,
+	.trophy3d-ember-disc::after,
+	.trophy3d-light-up,
+	.trophy3d-compact .trophy3d-model {
+		animation: none !important;
+		transition-duration: 0.01ms !important;
+	}
+}

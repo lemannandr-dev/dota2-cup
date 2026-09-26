@@ -1,0 +1,44 @@
+apply plugin: "com.android.application"
+
+def releaseBaseUrl = providers.gradleProperty("AEGIS_BASE_URL").getOrElse("https://aegis-arena.example/home")
+def releaseHost = providers.gradleProperty("AEGIS_APP_HOST").getOrElse("aegis-arena.example")
+
+android {
+    namespace "ru.aegisarena.app"
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "ru.aegisarena.app"
+        minSdk 26
+        targetSdk 36
+        versionCode 1
+        versionName "1.0.0"
+        manifestPlaceholders = [appHost: releaseHost]
+        buildConfigField "String", "BASE_URL", "\"${releaseBaseUrl}\""
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+            buildConfigField "String", "BASE_URL", '"http://10.0.2.2:3002/home"'
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation "androidx.activity:activity:1.11.0"
+}

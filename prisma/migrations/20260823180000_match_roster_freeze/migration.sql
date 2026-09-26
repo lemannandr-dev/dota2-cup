@@ -1,0 +1,2 @@
+ALTER TABLE "Match" ADD COLUMN "rosterA" JSONB;
+ALTER TABLE "Match" ADD COLUMN "rosterB" JSONB;

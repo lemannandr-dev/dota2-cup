@@ -1,0 +1,121 @@
+services:
+  web2:
+    build: .
+    container_name: media-game-cup-web-3
+    ports:
+      - "3002:3000"
+    env_file:
+      - .env
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONIOENCODING: utf-8
+      WATCHPACK_POLLING: "true"
+      WATCHPACK_POLLING_INTERVAL: "1000"
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "1000"
+      DISABLE_TOURNAMENT_TICK: "1"
+      NODE_OPTIONS: "--max-old-space-size=4096"
+    depends_on:
+      - postgres2
+      - redis2
+      - minio2
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    command: ["sh", "-c", "command -v python3 >/dev/null || (apt-get update && apt-get install -y --no-install-recommends python3 python3-zstandard && rm -rf /var/lib/apt/lists/*); mkdir -p .next; node scripts/copy-desktop-helper.mjs && npx prisma generate && npm run prisma:migrate && npm run dev"]
+
+  realtime2:
+    build: .
+    container_name: media-game-cup-realtime-3
+    env_file:
+      - .env
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONIOENCODING: utf-8
+      REALTIME_PORT: 3003
+      REDIS_URL: redis://redis2:6379
+      REALTIME_INTERNAL_URL: http://realtime2:3003
+    depends_on:
+      - redis2
+    ports:
+      - "3003:3003"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: ["npx", "tsx", "scripts/realtime-server.ts"]
+    restart: unless-stopped
+
+  tick2:
+    image: dota-realtime2
+    build: .
+    container_name: media-game-cup-tick-3
+    env_file:
+      - .env
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+      PYTHONIOENCODING: utf-8
+      DISABLE_TOURNAMENT_TICK: "0"
+    depends_on:
+      - postgres2
+      - redis2
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: ["sh", "-c", "command -v python3 >/dev/null || (apt-get update && apt-get install -y --no-install-recommends python3 python3-zstandard && rm -rf /var/lib/apt/lists/*); npx tsx scripts/tournament-worker.ts"]
+    restart: unless-stopped
+
+  gc-worker:
+    build:
+      context: .
+      dockerfile: gc-service/Dockerfile
+    env_file:
+      - .env
+    environment:
+      APP_INTERNAL_URL: http://web2:3000
+      GC_SERVICE_PORT: 8080
+    depends_on:
+      - web2
+    volumes:
+      - gc-worker-data:/data
+    restart: unless-stopped
+
+  postgres2:
+    image: postgres:15
+    container_name: media-game-cup-postgres-3
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: mediagame
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata3:/var/lib/postgresql/data
+
+  redis2:
+    image: redis:7
+    container_name: media-game-cup-redis-3
+    ports:
+      - "6381:6379"
+
+  minio2:
+    # Docker Hub `minio/minio` is often gated; quay.io is the public source.
+    image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
+    container_name: media-game-cup-minio-3
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123
+    command: server /data --console-address ":9102"
+    ports:
+      - "9102:9000"
+      - "9103:9001"
+    volumes:
+      - minio-data3:/data
+
+volumes:
+  pgdata3:
+  minio-data3:
+  gc-worker-data:

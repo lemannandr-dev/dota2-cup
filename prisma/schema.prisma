@@ -1,0 +1,826 @@
+generator client {
+	provider      = "prisma-client-js"
+	binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+	provider = "postgresql"
+	url      = env("DATABASE_URL")
+	directUrl = env("DIRECT_DATABASE_URL")
+}
+
+enum Role {
+	USER
+	GAMER
+	ORGANIZER
+	ADMIN
+}
+
+enum TransactionType {
+	DEPOSIT
+	WITHDRAW
+	BONUS
+	EARNED
+	SPENT
+	REFUND
+	PENALTY
+}
+
+enum VideoType {
+	HIGHLIGHT
+	FULL_MATCH
+	STREAM
+	TUTORIAL
+	REVIEW
+}
+
+enum Rarity {
+	COMMON
+	RARE
+	EPIC
+	LEGENDARY
+}
+
+enum TournamentFormat {
+	SINGLE_ELIMINATION
+	DOUBLE_ELIMINATION
+}
+
+enum TournamentStatus {
+	DRAFT
+	REGISTRATION
+	CHECK_IN
+	LIVE
+	FINISHED
+	CANCELLED
+}
+
+enum ApplicationStatus {
+	DRAFT
+	SUBMITTED
+	NEEDS_ACTION
+	APPROVED
+	CHECKED_IN
+	IN_BRACKET
+	REJECTED
+	WITHDRAWN
+	NO_CHECK_IN
+	DISQUALIFIED
+	WAITLIST
+}
+
+enum MatchStatus {
+	PENDING
+	SCHEDULED
+	LIVE
+	NEEDS_REVIEW
+	COMPLETED
+	TECHNICAL
+}
+
+enum DisputeStatus {
+	OPEN
+	IN_REVIEW
+	RESOLVED
+	REJECTED
+}
+
+enum StaffRole {
+	OWNER
+	ADMIN
+	REFEREE
+}
+
+enum PrizeAllocationStatus {
+	PENDING
+	RESERVED
+	PAID
+	VOID
+}
+
+model User {
+	id            String   @id @default(cuid())
+	userId        String   @unique
+	username      String?  @unique
+	email         String?  @unique
+	password      String?
+	displayName   String
+	steamId       String?  @unique
+	discordId     String?  @unique
+	avatarUrl     String?
+	role          Role     @default(USER)
+
+	balance       Int      @default(0)
+	totalEarned   Int      @default(0)
+	totalSpent    Int      @default(0)
+
+	rating        Int      @default(1000)
+	ratingGames   Int      @default(0)
+	level         Int      @default(1)
+	xp            Int      @default(0)
+	openDotaRankTier      Int?
+	openDotaLeaderboard   Int?
+	openDotaRankAt        DateTime?
+	openDotaMmr           Int?
+	openDotaMmrSource     String?
+
+	twitchChannel String?
+	isStreamer    Boolean  @default(false)
+
+	emailVerified DateTime?
+	image         String?
+	accounts      Account[]
+	sessions      Session[]
+
+	transactions  Transaction[]
+	videos        Video[]
+	highlights    Highlight[]
+	achievements  UserAchievement[]
+	teamsCreated  Team[]    @relation("creator")
+	memberships   TeamMember[]
+	bonusCodesCreated BonusCode[]
+	bonusRedemptions  BonusRedemption[]
+	dotaGuildMembership DotaGuildMember?
+	dotaSyncRequests   DotaSyncRequest[]
+	dotaClientSnapshots DotaClientSnapshot[]
+	dotaHeroProgress    DotaHeroProgress[]
+	tournamentStaff   TournamentStaff[]
+	refereeNominations RefereeNomination[] @relation("RefereeNominee")
+	refereeProposals   RefereeNomination[] @relation("RefereeProposer")
+	refereeVotes       RefereeBallotVote[]
+	lfgPosts          LfgPost[]
+	matchReports      MatchReport[]
+	pushSubscriptions PushSubscription[]
+	friendRequestsSent     Friendship[] @relation("FriendRequester")
+	friendRequestsReceived Friendship[] @relation("FriendAddressee")
+	lobbyMessages          LobbyMessage[]
+	referralCode           String?  @unique
+	referredById           String?
+	referredBy             User?    @relation("ReferralInviter", fields: [referredById], references: [id], onDelete: SetNull)
+	referrals              User[]   @relation("ReferralInviter")
+	referralPayouts        ReferralPayout[]
+
+	totpSecret    String?
+	totpEnabledAt DateTime?
+
+	createdAt     DateTime @default(now())
+	updatedAt     DateTime @updatedAt
+	lastLoginAt   DateTime?
+
+	@@index([steamId])
+	@@index([discordId])
+	@@index([referredById])
+}
+
+model ReferralMilestone {
+	id            String   @id @default(cuid())
+	threshold     Int      @unique
+	amountKopecks Int
+	label         String
+	isActive      Boolean  @default(true)
+	createdAt     DateTime @default(now())
+	updatedAt     DateTime @updatedAt
+	payouts       ReferralPayout[]
+}
+
+model ReferralPayout {
+	id            String   @id @default(cuid())
+	userId        String
+	milestoneId   String
+	transactionId String?  @unique
+	createdAt     DateTime @default(now())
+	user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+	milestone     ReferralMilestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+
+	@@unique([userId, milestoneId])
+	@@index([milestoneId])
+}
+
+model LobbyMessage {
+	id        String   @id @default(cuid())
+	userId    String
+	body      String
+	createdAt DateTime @default(now())
+	user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@index([userId, createdAt])
+	@@index([createdAt])
+}
+
+model Friendship {
+	id          String   @id @default(cuid())
+	requesterId String
+	addresseeId String
+	status      String   @default("PENDING")
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+	requester   User     @relation("FriendRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+	addressee   User     @relation("FriendAddressee", fields: [addresseeId], references: [id], onDelete: Cascade)
+
+	@@unique([requesterId, addresseeId])
+	@@index([addresseeId, status])
+	@@index([requesterId, status])
+}
+
+model DotaSyncRequest {
+	id        String   @id @default(cuid())
+	userId    String
+	tokenHash String   @unique
+	expiresAt DateTime
+	usedAt    DateTime?
+	createdAt DateTime @default(now())
+	user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@index([userId, expiresAt])
+}
+
+model DotaHeroProgress {
+	id         String   @id @default(cuid())
+	userId     String
+	heroId     Int
+	level      Int
+	xp         Int
+	xpToNext   Int?
+	source     String
+	capturedAt DateTime
+	payload    Json?
+	createdAt  DateTime @default(now())
+	updatedAt  DateTime @updatedAt
+	user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@unique([userId, heroId])
+	@@index([userId, capturedAt])
+}
+
+model DotaClientSnapshot {
+	id        String   @id @default(cuid())
+	userId    String
+	steamPath String?
+	dotaPath  String?
+	payload   Json
+	createdAt DateTime @default(now())
+	user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@index([userId, createdAt])
+}
+
+model DotaGuild {
+	id              String              @id @default(cuid())
+	guildId         String              @unique
+	name            String
+	tag             String?
+	avatarUrl       String?
+	points          Int?
+	leaderboardRank Int?
+	level           Int?
+	members         DotaGuildMember[]
+	snapshots       DotaGuildSnapshot[]
+	lastSyncedAt    DateTime?
+	createdAt       DateTime            @default(now())
+	updatedAt       DateTime            @updatedAt
+}
+
+model DotaGuildMember {
+	id          String    @id @default(cuid())
+	guildId     String
+	steamId     String
+	displayName String?
+	role        String?
+	points      Int?
+	userId      String?   @unique
+	guild       DotaGuild @relation(fields: [guildId], references: [id], onDelete: Cascade)
+	user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+	joinedAt    DateTime?
+	updatedAt   DateTime  @updatedAt
+
+	@@unique([guildId, steamId])
+	@@index([steamId])
+}
+
+model DotaGuildSnapshot {
+	id              String    @id @default(cuid())
+	guildId         String
+	points          Int?
+	leaderboardRank Int?
+	level           Int?
+	payload         Json
+	capturedAt      DateTime  @default(now())
+
+	guild           DotaGuild @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+	@@index([guildId, capturedAt])
+}
+
+model Account {
+	id                 String  @id @default(cuid())
+	userId             String
+	type               String
+	provider           String
+	providerAccountId  String
+	refresh_token      String?
+	access_token       String?
+	expires_at         Int?
+	token_type         String?
+	scope              String?
+	id_token           String?
+	session_state      String?
+
+	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@unique([provider, providerAccountId])
+}
+
+model Session {
+	id            String   @id @default(cuid())
+	sessionToken  String   @unique
+	userId        String
+	expires       DateTime
+	user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+	identifier  String
+	token       String   @unique
+	expires     DateTime
+
+	@@unique([identifier, token])
+}
+
+model Transaction {
+	id          String   @id @default(cuid())
+	userId      String
+	user        User     @relation(fields: [userId], references: [id])
+	type        TransactionType
+	amount      Int
+	balance     Int
+	description String
+	metadata    Json?
+	bonusCodeId String?
+	bonusCode   BonusCode? @relation(fields: [bonusCodeId], references: [id])
+	createdAt   DateTime @default(now())
+}
+
+model BonusCode {
+	id          String   @id @default(cuid())
+	code        String   @unique
+	amount      Int
+	description String
+	maxUses     Int?
+	usedCount   Int      @default(0)
+	isActive    Boolean  @default(true)
+	validFrom   DateTime?
+	validUntil  DateTime?
+	minLevel    Int?
+	roles       Role[]
+	transactions Transaction[]
+	redemptions  BonusRedemption[]
+	createdById String
+	createdBy   User     @relation(fields: [createdById], references: [id])
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+}
+
+model BonusRedemption {
+	id          String    @id @default(cuid())
+	userId      String
+	bonusCodeId String
+	createdAt   DateTime  @default(now())
+	user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+	bonusCode   BonusCode @relation(fields: [bonusCodeId], references: [id], onDelete: Cascade)
+
+	@@unique([userId, bonusCodeId])
+	@@index([bonusCodeId])
+}
+
+model Video {
+	id          String   @id @default(cuid())
+	userId      String
+	user        User     @relation(fields: [userId], references: [id])
+	title       String
+	description String?
+	url         String
+	thumbnail   String?
+	duration    Int?
+	views       Int      @default(0)
+	likes       Int      @default(0)
+	shares      Int      @default(0)
+	type        VideoType
+	game        String?
+	twitchVodId String?
+	streamDate  DateTime?
+	isPublic    Boolean  @default(true)
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+}
+
+model Highlight {
+	id          String   @id @default(cuid())
+	userId      String
+	user        User     @relation(fields: [userId], references: [id])
+	title       String
+	description String?
+	videoUrl    String
+	thumbnail   String?
+	duration    Int
+	views       Int      @default(0)
+	likes       Int      @default(0)
+	shares      Int      @default(0)
+	game        String
+	matchId     String?
+	playerStats Json?
+	isPublic    Boolean  @default(true)
+	createdAt   DateTime @default(now())
+}
+
+model Achievement {
+	id          String   @id @default(cuid())
+	name        String
+	description String
+	icon        String
+	xp          Int
+	coins       Int      @default(0)
+	rarity      Rarity
+	condition   Json
+	users       UserAchievement[]
+	isActive    Boolean  @default(true)
+	createdAt   DateTime @default(now())
+}
+
+model UserAchievement {
+	id            String      @id @default(cuid())
+	userId        String
+	user          User        @relation(fields: [userId], references: [id])
+	achievementId String
+	achievement   Achievement @relation(fields: [achievementId], references: [id])
+	progress      Int         @default(0)
+	isCompleted   Boolean     @default(false)
+	completedAt   DateTime?
+	createdAt     DateTime    @default(now())
+
+	@@unique([userId, achievementId])
+}
+
+// Teams and tournaments
+model Team {
+	id           String      @id @default(cuid())
+	name         String
+	tag          String?
+	game         String
+	description  String?
+	logo         String?
+	bannerUrl    String?
+	videoUrl     String?
+	contactUrl   String?
+	notifyWebhook String?
+	telegramChatId String?
+	region       String?
+	language     String?
+	playstyle    String?
+	goals        String?
+	recruitmentStatus String @default("OPEN")
+	createdById  String
+	createdBy    User        @relation("creator", fields: [createdById], references: [id])
+	members      TeamMember[]
+	applications TeamApplication[]
+	refereeNominations RefereeNomination[]
+	matchesAsA   Match[]     @relation("matchTeamA")
+	matchesAsB   Match[]     @relation("matchTeamB")
+	createdAt    DateTime    @default(now())
+	updatedAt    DateTime    @updatedAt
+	deletedAt    DateTime?
+
+	@@index([game])
+	@@index([createdById])
+}
+
+model TeamMember {
+	id        String @id @default(cuid())
+	teamId    String
+	userId    String
+	role      String @default("member")
+	confirmed Boolean @default(false)
+	confirmedAt DateTime?
+	isSubstitute Boolean @default(false)
+	joinedAt  DateTime @default(now())
+
+	team      Team   @relation(fields: [teamId], references: [id])
+	user      User   @relation(fields: [userId], references: [id])
+
+	@@unique([teamId, userId])
+	@@index([userId])
+}
+
+model Tournament {
+	id        String   @id @default(cuid())
+	title     String
+	description String?
+	format    TournamentFormat @default(SINGLE_ELIMINATION)
+	status    TournamentStatus @default(DRAFT)
+	maxTeams  Int      @default(8)
+	seriesRules String  @default("BO1")
+	region    String?
+	rankCap   String?
+	prizePool Int      @default(0)
+	prizeCurrency String @default("RUB")
+	prizeStatus String @default("UNCONFIRMED")
+	aegisAward String @default("ember")
+	inviteOnly Boolean @default(false)
+	scrimBoard Boolean @default(false)
+	checkInOpensAt DateTime?
+	checkInClosesAt DateTime?
+	startAt   DateTime
+	rules     String?
+	broadcast Json?
+	createdById String?
+	createdAt DateTime  @default(now())
+	updatedAt DateTime  @updatedAt
+	applications TeamApplication[]
+	matches   Match[]
+	staff     TournamentStaff[]
+	refereeNominations RefereeNomination[]
+	prizeAllocations PrizeAllocation[]
+	lfgPosts  LfgPost[]
+}
+
+model TeamApplication {
+	id           String   @id @default(cuid())
+	teamId       String
+	tournamentId String
+	status       ApplicationStatus @default(SUBMITTED)
+	seed         Int?
+	checkedInAt  DateTime?
+	rosterSnapshot Json?
+	requestedStart DateTime?
+	createdAt    DateTime @default(now())
+	updatedAt    DateTime @updatedAt
+
+	team         Team      @relation(fields: [teamId], references: [id])
+	tournament   Tournament @relation(fields: [tournamentId], references: [id])
+
+	@@unique([teamId, tournamentId])
+	@@index([tournamentId])
+}
+
+model Match {
+	id           String   @id @default(cuid())
+	tournamentId String
+	scrim        Boolean  @default(false)
+	round        Int      @default(1)
+	position     Int      @default(0)
+	bracket      String   @default("winners")
+	bestOf       Int      @default(1)
+	status       MatchStatus @default(PENDING)
+	teamAId      String?
+	teamBId      String?
+	scoreA       Int      @default(0)
+	scoreB       Int      @default(0)
+	winnerTeamId String?
+	dotaMatchIds String[] @default([])
+	rosterA      Json?
+	rosterB      Json?
+	nextMatchId  String?
+	nextMatchSlot String?
+	nextLoserMatchId String?
+	nextLoserSlot String?
+	reportDeadlineAt DateTime?
+	lobby        Json?
+	startedAt    DateTime?
+	finishedAt   DateTime?
+	createdAt    DateTime @default(now())
+	updatedAt    DateTime @updatedAt
+
+	tournament   Tournament @relation(fields: [tournamentId], references: [id])
+	challenge    TeamChallenge?
+	teamA        Team?    @relation("matchTeamA", fields: [teamAId], references: [id])
+	teamB        Team?    @relation("matchTeamB", fields: [teamBId], references: [id])
+	disputes     Dispute[]
+	reports      MatchReport[]
+
+	@@unique([tournamentId, bracket, round, position])
+	@@index([tournamentId, round])
+}
+
+model Dispute {
+	id          String   @id @default(cuid())
+	matchId     String
+	match       Match    @relation(fields: [matchId], references: [id])
+	openedById  String
+	reason      String
+	details     String?
+	status      DisputeStatus @default(OPEN)
+	resolution  String?
+	resolvedById String?
+	resolvedAt  DateTime?
+	evidenceKey  String?
+	evidenceUrl  String?
+	evidenceKind String?
+	evidenceName String?
+	createdAt   DateTime @default(now())
+
+	@@index([matchId])
+	@@index([status])
+}
+
+model AuditLog {
+	id        String   @id @default(cuid())
+	actorId   String?
+	action    String
+	entity    String
+	entityId  String
+	payload   Json?
+	createdAt DateTime @default(now())
+
+	@@index([entity, entityId])
+	@@index([actorId])
+}
+
+model TeamChallenge {
+	id          String   @id @default(cuid())
+	fromTeamId  String
+	toTeamId    String
+	fromUserId  String
+	toUserId    String
+	message     String?
+	status      String   @default("PENDING")
+	scheduledAt DateTime?
+	matchId     String?  @unique
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+	match       Match?   @relation(fields: [matchId], references: [id], onDelete: SetNull)
+
+	@@index([fromTeamId])
+	@@index([toTeamId, status])
+	@@index([toUserId, status])
+}
+
+model Notification {
+	id        String   @id @default(cuid())
+	userId    String
+	type      String
+	title     String
+	body      String
+	linkUrl   String?
+	readAt    DateTime?
+	metadata  Json?
+	createdAt DateTime @default(now())
+
+	@@index([userId, readAt])
+	@@index([createdAt])
+}
+
+model PushSubscription {
+	id        String   @id @default(cuid())
+	userId    String
+	endpoint  String   @unique
+	p256dh    String
+	auth      String
+	userAgent String?
+	createdAt DateTime @default(now())
+	updatedAt DateTime @updatedAt
+	user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@index([userId])
+}
+
+model TeamInvite {
+	id          String   @id @default(cuid())
+	teamId      String
+	fromUserId  String
+	toUserId    String
+	role        String   @default("member")
+	message     String?
+	status      String   @default("PENDING")
+	createdAt   DateTime @default(now())
+	updatedAt   DateTime @updatedAt
+	respondedAt DateTime?
+	tournamentId String?
+
+	@@index([teamId, status])
+	@@index([toUserId, status])
+	@@index([fromUserId])
+}
+
+model TeamJoinLink {
+	id          String   @id @default(cuid())
+	tokenHash   String   @unique
+	teamId      String
+	fromUserId  String
+	tournamentId String?
+	expiresAt   DateTime
+	revokedAt   DateTime?
+	createdAt   DateTime @default(now())
+
+	@@index([teamId, fromUserId])
+}
+
+model TournamentStaff {
+	id           String    @id @default(cuid())
+	tournamentId String
+	userId       String
+	role         StaffRole @default(OWNER)
+	createdAt    DateTime  @default(now())
+	tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+	user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+	@@unique([tournamentId, userId])
+	@@index([userId])
+}
+
+model RefereeNomination {
+	id           String   @id @default(cuid())
+	tournamentId String
+	nomineeId    String
+	proposedById String
+	teamId       String
+	createdAt    DateTime @default(now())
+	tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+	nominee      User       @relation("RefereeNominee", fields: [nomineeId], references: [id], onDelete: Cascade)
+	proposedBy   User       @relation("RefereeProposer", fields: [proposedById], references: [id], onDelete: Cascade)
+	team         Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+	votes        RefereeBallotVote[]
+
+	@@unique([tournamentId, teamId])
+	@@unique([tournamentId, nomineeId])
+	@@index([nomineeId])
+}
+
+model RefereeBallotVote {
+	id           String   @id @default(cuid())
+	tournamentId String
+	nominationId String
+	teamId       String
+	voterId      String
+	createdAt    DateTime @default(now())
+	nomination   RefereeNomination @relation(fields: [nominationId], references: [id], onDelete: Cascade)
+	voter        User              @relation(fields: [voterId], references: [id], onDelete: Cascade)
+
+	@@unique([tournamentId, teamId])
+	@@index([nominationId])
+}
+
+model MatchReport {
+	id           String   @id @default(cuid())
+	matchId      String
+	teamId       String
+	reporterId   String
+	scoreA       Int
+	scoreB       Int
+	dotaMatchIds String[] @default([])
+	createdAt    DateTime @default(now())
+	match        Match    @relation(fields: [matchId], references: [id], onDelete: Cascade)
+	reporter     User     @relation(fields: [reporterId], references: [id])
+
+	@@unique([matchId, teamId])
+	@@index([reporterId])
+}
+
+model PrizeAllocation {
+	id           String                 @id @default(cuid())
+	tournamentId String
+	place        Int
+	teamId       String?
+	amount       Int
+	status       PrizeAllocationStatus  @default(PENDING)
+	paidAt       DateTime?
+	createdAt    DateTime               @default(now())
+	updatedAt    DateTime               @updatedAt
+	tournament   Tournament             @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+	@@unique([tournamentId, place])
+	@@index([tournamentId, status])
+}
+
+model LfgPost {
+	id         String    @id @default(cuid())
+	userId     String
+	roles      Int[]
+	mmrMin     Int?
+	mmrMax     Int?
+	windowFrom DateTime?
+	windowTo   DateTime?
+	note         String?
+	tournamentId String?
+	expiresAt    DateTime
+	createdAt    DateTime  @default(now())
+	updatedAt    DateTime  @updatedAt
+	user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+	tournament   Tournament? @relation(fields: [tournamentId], references: [id], onDelete: SetNull)
+
+	@@index([userId, expiresAt])
+	@@index([expiresAt])
+	@@index([tournamentId])
+}
+
+model SiteAppearance {
+	id                  String   @id
+	appLogoUrl          String
+	dotaLogoUrl         String
+	mobileBackdropUrl   String
+	homeCoverUrl        String   @default("/brand/dota2-heroes.webp")
+	motionEnabled       Boolean  @default(true)
+	backdropOpacity     Int      @default(24)
+	backdropPositionY   Int      @default(42)
+	updatedById         String?
+	createdAt           DateTime @default(now())
+	updatedAt           DateTime @updatedAt
+}

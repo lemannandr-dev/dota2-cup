@@ -1,0 +1,15 @@
+.git
+.next
+node_modules
+Version_Buckaps
+coverage
+*.log
+npm-debug.log*
+.codex
+.agents
+.data
+test-results
+playwright-report
+android/.gradle
+android/app/build
+android/build

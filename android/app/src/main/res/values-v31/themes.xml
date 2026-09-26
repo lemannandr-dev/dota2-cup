@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.AegisArena.Starting" parent="Theme.AegisArena">
+        <item name="android:windowSplashScreenBackground">@color/aegis_ink</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/aegis_icon</item>
+        <item name="android:windowSplashScreenIconBackgroundColor">@color/aegis_panel</item>
+    </style>
+</resources>

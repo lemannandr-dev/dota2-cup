@@ -1,0 +1,8 @@
+{
+  "version": "0.4.1",
+  "files": [
+    "DotaSyncHelper.ps1",
+    "DotaSyncHelper.cmd",
+    "read-replay-plus.py"
+  ]
+}

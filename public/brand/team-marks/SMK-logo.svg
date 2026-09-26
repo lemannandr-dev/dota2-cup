@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d4ea0"/>
+      <stop offset="1" stop-color="#160e24"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#g)"/>
+  <circle cx="50" cy="66" r="14" fill="#eadcff" opacity="0.85"/><circle cx="68" cy="58" r="16" fill="#eadcff"/><circle cx="84" cy="68" r="12" fill="#eadcff" opacity="0.8"/>
+  <text x="64" y="114" text-anchor="middle" font-family="Georgia, serif" font-size="14" fill="#eadcff" letter-spacing="1.5">SMK</text>
+</svg>
